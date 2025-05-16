@@ -4,14 +4,15 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import TodaysBrief from './components/todaybrief'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <div>
-      <TodaysBrief />
+    <div className="w-full h-screen bg-black text-white flex items-center justify-center">
+      {/* Only render TodaysBrief on mobile screens */}
+      <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
+        <TodaysBrief />
+      </div>
     </div>
-  )
-}
+  );
+};
 
 export default App;
