@@ -10,7 +10,7 @@ const App = () => {
     <div className="w-full h-screen bg-black text-white flex items-center justify-center">
 
       <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
-        {/* <CameraCapture/> */}
+        <CameraCapture/> 
         <TodaysBrief />
         
       </div>
