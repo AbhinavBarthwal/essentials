@@ -5,29 +5,29 @@ import { Camera, CameraOff, RefreshCw } from "lucide-react";
 const CameraCapture = () => {
   const [capturedImage, setCapturedImage] = useState(null);
 
-  // Commenting out camera functionality for now
-  // const webcamRef = useRef(null);
-  // const [isCameraOn, setIsCameraOn] = useState(false);
-  // const [facingMode, setFacingMode] = useState("user");
+  //Commenting out camera functionality for now
+  const webcamRef = useRef(null);
+  const [isCameraOn, setIsCameraOn] = useState(false);
+  const [facingMode, setFacingMode] = useState("user");
 
   useEffect(() => {
     console.log("Camera functionality is currently disabled.");
   }, []);
 
-  // const captureImage = () => {
-  //   const imageSrc = webcamRef.current.getScreenshot();
-  //   setCapturedImage(imageSrc);
-  //   setIsCameraOn(false);
-  // };
+  const captureImage = () => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setCapturedImage(imageSrc);
+    setIsCameraOn(false);
+  };
 
-  // const toggleCamera = () => {
-  //   setIsCameraOn(!isCameraOn);
-  //   setCapturedImage(null);
-  // };
+  const toggleCamera = () => {
+    setIsCameraOn(!isCameraOn);
+    setCapturedImage(null);
+  };
 
-  // const switchCamera = () => {
-  //   setFacingMode(facingMode === "user" ? "environment" : "user");
-  // };
+  const switchCamera = () => {
+    setFacingMode(facingMode === "user" ? "environment" : "user");
+  };
 
   return (
     <div className="w-full h-120 bg-black flex flex-col items-center justify-center">
@@ -35,8 +35,9 @@ const CameraCapture = () => {
         {capturedImage ? (
           <img src={capturedImage} alt="Captured" className="w-full h-full object-cover rounded-lg" />
         ) : (
-          <img src="https://i.pinimg.com/736x/1b/fa/de/1bfade575c0dd291a21d005bc5757801.jpg" alt="Sample" className="w-full h-120 object-cover overflow-hidden rounded-lg" />
+          <img src="../src/assets/20240313_094609.jpg"alt="Sample" className="w-full  h-120 object-cover overflow-hidden rounded-lg" />
         )}
+        
       </div>
     </div>
   );

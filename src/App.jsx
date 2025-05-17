@@ -4,6 +4,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import TodaysBrief from './components/todaybrief'
 import CameraCapture from './components/inputimage'
+import Collection from './components/collection'
 
 const App = () => {
   return (
@@ -12,7 +13,7 @@ const App = () => {
       <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
         <CameraCapture/> 
         <TodaysBrief />
-        
+        <Collection/>
       </div>
     </div>
   );
