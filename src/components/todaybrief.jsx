@@ -1,5 +1,7 @@
 import React from "react";
 
+
+
 const TodaysBrief = () => {
   return (
     <div className="w-full flex flex-col items-start py-3">
@@ -10,7 +12,9 @@ const TodaysBrief = () => {
           Today you have to pickup a present for Charlie, drop trousers at the laundry, and you have a dinner with Yuri in Soho.
         </p>
       </div>
+
     </div>
+    
   );
 };
 
