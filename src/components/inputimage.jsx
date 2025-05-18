@@ -35,7 +35,7 @@ const CameraCapture = () => {
         {capturedImage ? (
           <img src={capturedImage} alt="Captured" className="w-full h-full object-cover rounded-lg" />
         ) : (
-          <img src="../src/assets/20240313_094609.jpg"alt="Sample" className="w-full  h-120 object-cover overflow-hidden rounded-lg" />
+          <img src="https://i.pinimg.com/736x/ca/ae/2b/caae2b4cb08d6c164fb2a7283c68b2ae.jpg" alt="Sample" className="w-full  h-120 object-cover overflow-hidden rounded-lg" />
         )}
         
       </div>

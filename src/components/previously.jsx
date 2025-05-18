@@ -1,14 +1,14 @@
 import React from 'react';
 import PartPreviously from './partpreviously';
 const data = [
-    { id:1, title:'Weekly Prediction checkup',},
-    { id:2, title:'Weekly Prediction checkup'},
+    { id:1, title:'Weekly Prediction checkup',image:"https://i.pinimg.com/736x/ca/ae/2b/caae2b4cb08d6c164fb2a7283c68b2ae.jpg" },
+    { id:2, title:'Weekly Prediction checkup',image:"https://i.pinimg.com/736x/ca/ae/2b/caae2b4cb08d6c164fb2a7283c68b2ae.jpg"},
 ];
 const Previously = () =>{
     return (
         <div className ="w-full py-2 text-white">
             <h2 className = "text-lg font-semibold mb-3">Previously on Essentials</h2>
-            <div className = "flex space-x-10">
+            <div className = "flex space-x-3">
             {data.map(item => (
           <PartPreviously key={item.id} image={item.image} title={item.title} />
           ))}

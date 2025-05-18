@@ -1,7 +1,7 @@
 import React from 'react';
 const PartPreviously=({image,title}) =>{
     return (
-        <div className="bg-gray-800 rounded-xl overflow-hidden shadow-md w-[57%]">
+        <div className="bg-gray-800 rounded-xl overflow-hidden shadow-md w-[60%]">
             <img src={image} alt={title} className="w-full h-24 object-cover" />
             <div className="p-2 flex justify-between items-center bg-gray-700">
                 <span className="text-white text-xs">{title}</span>
