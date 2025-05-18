@@ -5,15 +5,16 @@ import './App.css'
 import TodaysBrief from './components/todaybrief'
 import CameraCapture from './components/inputimage'
 import Collection from './components/collection'
+import Previously from './components/previously';
 
 const App = () => {
   return (
     <div className="w-full h-screen bg-black text-white flex items-center justify-center">
-
       <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
         <CameraCapture/> 
         <TodaysBrief />
         <Collection/>
+        <Previously/>
       </div>
     </div>
   );

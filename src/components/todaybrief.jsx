@@ -1,7 +1,4 @@
 import React from "react";
-
-
-
 const TodaysBrief = () => {
   return (
     <div className="w-full flex flex-col items-start py-3">
