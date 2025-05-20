@@ -1,12 +1,12 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const PartCollection = ({ text, time,im }) => {
+const PartCollection = ({ text, time,im,desc}) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
     navigate('/detail', {
-      state: { text, time,im}, // passing data to DetailView
+      state: { text, time,im,desc}, // passing data to DetailView
     });
   };
 

@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'; // Optional: if you're using Lucide ic
 const DetailView = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { text, time ,im } = location.state || {};
+  const { text, time ,im ,desc} = location.state || {};
 
   return (
     <div className="min-h-screen bg-black text-white p-4 flex flex-col gap-4 relative">
@@ -34,10 +34,7 @@ const DetailView = () => {
 
       {/* Description */}
       <div className="bg-gray-800 text-sm text-gray-300 rounded-xl px-4 py-3 leading-relaxed">
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-        Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-        when an unknown printer took a galley of type and scrambled it to make a
-        type specimen book.
+        {desc}
       </div>
     </div>
   );
