@@ -1,22 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import TodaysBrief from './components/todaybrief'
-import CameraCapture from './components/inputimage'
-import Collection from './components/collection'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import TodaysBrief from './components/todaybrief';
+import CameraCapture from './components/inputimage';
+import Collection from './components/collection';
 import Previously from './components/previously';
+import DetailView from './components/DetailView'; // Import your expanded view
 
 const App = () => {
   return (
-    <div className="w-full h-screen bg-black text-white flex items-center justify-center">
-      <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
-        <CameraCapture/> 
-        <TodaysBrief />
-        <Collection/>
-        <Previously/>
+    <Router>
+      <div className="w-full h-full bg-black text-white flex items-center justify-center">
+        <Routes>
+          {/* Home Page */}
+          <Route
+            path="/"
+            element={
+              <div className="block sm:hidden bg-gray-900 p-4 rounded-lg">
+                <CameraCapture />
+                <TodaysBrief />
+                <Collection />
+                <Previously />
+              </div>
+            }
+          />
+
+          {/* Detail View Page */}
+          <Route path="/detail" element={<DetailView />} />
+        </Routes>
       </div>
-    </div>
+    </Router>
   );
 };
 
