@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react'; // Optional: if you're using Lucide icons
+import { ArrowLeft } from 'lucide-react';
 
 const DetailView = () => {
   const location = useLocation();
@@ -9,27 +9,31 @@ const DetailView = () => {
 
   return (
     <div className="min-h-screen bg-black text-white p-4 flex flex-col gap-4 relative">
-      {/* Back Button */}
-      <button
-        onClick={() => navigate(-1)}
-        className="absolute top-4 left-4 z-10 p-1 rounded-full bg-gray-700 hover:bg-gray-600"
-      >
-        <ArrowLeft size={20} />
-      </button>
+      
+<div className="flex items-center gap-4 ">
+ 
+  <button
+    onClick={() => navigate(-1)}
+    className="p-2 rounded-full"
+  >
+    <ArrowLeft size={30} />
+  </button>
 
-      {/* Title */}
-      <div className="bg-gray-800 rounded-xl px-3 py-1.5 text-center text-base italic font-medium mt-10">
-        {text || 'No Title'}
-        <hr />
-        {time}
-      </div>
+ 
+  <div className="bg-gray-800 rounded-xl px-4 w-full text-center py-2 text-base italic font-medium">
+    <div className="text-white">{text || 'No Title'}</div>
+    <hr className="my-1 border-gray-600" />
+    <div className="text-gray-400 text-sm">{time}</div>
+  </div>
+</div>
 
-      {/* Scenic Image */}
-<img
-  src={im || "https://via.placeholder.com/600x400?text=No+Image+Provided"}
-  alt="Scenic View"
-  className="w-full h-[64%] object-cover"
-/>
+
+
+      <img
+        src={im || "https://via.placeholder.com/600x400?text=No+Image+Provided"}
+        alt="Scenic View"
+        className="w-full h-[64%] object-cover mt-[-2%] rounded-xl "
+      />
 
 
       {/* Description */}
