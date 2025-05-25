@@ -6,8 +6,8 @@ const PartCollection = ({ text, time,im,desc}) => {
 
   const handleClick = () => {
     navigate('/detail', {
-      state: { text, time,im,desc}, // passing data to DetailView
-    });
+      state: { text, time,im,desc}, 
+    });  
   };
 
   return (

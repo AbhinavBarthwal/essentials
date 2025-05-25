@@ -3,14 +3,15 @@ import TodaysBrief from './components/todaybrief';
 import CameraCapture from './components/inputimage';
 import Collection from './components/collection';
 import Previously from './components/previously';
-import DetailView from './components/DetailView'; // Import your expanded view
+import DetailView from './components/DetailView'; 
+
 
 const App = () => {
   return (
     <Router>
       <div className="w-full h-full bg-black text-white flex items-center justify-center">
         <Routes>
-          {/* Home Page */}
+          
           <Route
             path="/"
             element={
@@ -19,11 +20,12 @@ const App = () => {
                 <TodaysBrief />
                 <Collection />
                 <Previously />
+
               </div>
             }
           />
 
-          {/* Detail View Page */}
+          
           <Route path="/detail" element={<DetailView />} />
         </Routes>
       </div>

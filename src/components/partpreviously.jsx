@@ -8,7 +8,7 @@ const PartPreviously = ({ image, title ,desc}) => {
     navigate('/detail', {
       state: {
         text: title,
-        time: "Previously", // Static label or you can add a dynamic timestamp
+        time: "Previously", 
         im: image,
         desc:desc
       }
