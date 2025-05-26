@@ -3,7 +3,22 @@ import Webcam from "react-webcam";
 import { RefreshCw } from "lucide-react";
 import { FaPlay, FaPause } from "react-icons/fa";
 
-// === Text Input ===
+function dataURLtoFile(dataurl, filename) {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while(n--) u8arr[n] = bstr.charCodeAt(n);
+  return new File([u8arr], filename, {type:mime});
+}
+
+async function urlToFile(url, filename, mimeType) {
+  const res = await fetch(url);
+  const buffer = await res.arrayBuffer();
+  return new File([buffer], filename, { type: mimeType });
+}
+
 const TextInput = ({ value, onChange }) => (
   <input
     type="text"
@@ -232,15 +247,37 @@ const UnifiedInputPage = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
 
-  const handleSend = () => {
-    const payload = {
-      text: text.trim(),
-      image: capturedImage,
-      audio: audioUrl,
-    };
-    console.log("Sending payload:", payload);
+  // Moved handleSend inside component so it can access states
+  const handleSend = async () => {
+    const formData = new FormData();
 
-    // You can send this to your backend or handle accordingly
+    if (text) formData.append('text', text);
+
+    if (capturedImage) {
+      const imageFile = dataURLtoFile(capturedImage, 'capture.jpg');
+      formData.append('image', imageFile);
+    }
+
+    if (audioUrl) {
+      const audioFile = await urlToFile(audioUrl, 'audio.webm', 'audio/webm');
+      formData.append('audio', audioFile);
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/process/", {
+        method: "POST",
+        body: formData
+      });
+
+      if (!response.ok) throw new Error("Failed to send");
+
+      const result = await response.json();
+      console.log("Response from backend:", result);
+      alert("Data processed successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Error sending data to backend");
+    }
   };
 
   return (
@@ -253,9 +290,10 @@ const UnifiedInputPage = () => {
         </div>
         <button
           onClick={handleSend}
-          className="w-[18%] mt-2 h-12 bg-blue-500 rounded-2xl text-white py-1"
+          className="mt-4 ml-2 w-1/5 px-4 py-3 bg-blue-600 hover:bg-blue-700 rounded-2xl text-white"
+          disabled={!text && !capturedImage && !audioUrl}
         >
-          SEND
+          Send
         </button>
       </div>
     </div>

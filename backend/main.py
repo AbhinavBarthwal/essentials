@@ -5,11 +5,25 @@ from typing import Optional
 from google.cloud import speech
 import os
 from utils.audio_utils import transcribe_audio_file
+from fastapi.middleware.cors import CORSMiddleware
+
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/abhin/project-root/essentials/backend/google-credentials.json"
 app = FastAPI()
 
 
+origins = [
+    "http://localhost:5173",
+    # add more if needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,        # or ["*"] for all origins (not recommended in prod)
+    allow_credentials=True,
+    allow_methods=["*"],          # allow all HTTP methods (GET, POST, etc)
+    allow_headers=["*"],          # allow all headers
+)
 
 
 @app.post("/process/")
@@ -68,6 +82,4 @@ async def process_text(text: str):
     return result
 
 
-@app.post("/process/")
-async def process_input(image: UploadFile = File(None), audio: UploadFile = File(None), text: str = ""):
-    return await process_all_inputs(image=image, audio=audio, text=text)
+
