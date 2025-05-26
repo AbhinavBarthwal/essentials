@@ -7,6 +7,7 @@ google-cloud-speech
 google-cloud-translate
 google-cloud-vision
 google-cloud-aiplatform
+google-cloud-language   # <--- Add this line
 supabase
 python-dotenv
 starlette

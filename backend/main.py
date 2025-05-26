@@ -1,17 +1,22 @@
+import os
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+import traceback
+import uvicorn
+from typing import Optional
+
+# Your utility imports
 from utils.vision_utils import analyze_image, detect_text_from_image
 from utils.text_utils import analyze_text
-from typing import Optional
-from google.cloud import speech
-import os
 from utils.audio_utils import transcribe_audio_file
-from fastapi.middleware.cors import CORSMiddleware
 
+# Set Google credentials path
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/abhin/project-root/essentials/backend/google-credentials.json"
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "C:/Users/abhin/project-root/essentials/backend/google-credentials.json"
 app = FastAPI()
 
-
+# CORS setup
 origins = [
     "http://localhost:5173",
     # add more if needed
@@ -21,13 +26,13 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,        # or ["*"] for all origins (not recommended in prod)
     allow_credentials=True,
-    allow_methods=["*"],          # allow all HTTP methods (GET, POST, etc)
-    allow_headers=["*"],          # allow all headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-
-from fastapi.responses import JSONResponse
-import traceback
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
 @app.post("/process/")
 async def process_multimodal(
@@ -36,7 +41,6 @@ async def process_multimodal(
     audio: Optional[UploadFile] = File(None)
 ):
     result = {}
-
     try:
         if text:
             text_analysis = await analyze_text(text)
@@ -63,20 +67,17 @@ async def process_multimodal(
         traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
 
-
 @app.get("/hello")
 async def say_hello():
     return {"message": "Hello, world!"}
 
 @app.get("/health")
-def root():
+def health_check():
     return {"message": "Backend is running successfully!"}
-
 
 @app.post("/upload-image")
 async def upload_image(file: UploadFile = File(...)):
     labels = await analyze_image(file)
-    # Reset file read pointer to 0 because it was read in analyze_image
     await file.seek(0)
     detected_text = await detect_text_from_image(file)
     return {
@@ -90,5 +91,7 @@ async def process_text(text: str):
     result = await analyze_text(text)
     return result
 
-
-
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 8080))
+    # Bind to 0.0.0.0 so it listens externally
+    uvicorn.run(app, host="0.0.0.0", port=port)

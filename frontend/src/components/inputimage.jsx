@@ -264,12 +264,10 @@ const UnifiedInputPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8000/process/", {
-        method: "POST",
-        body: formData
-      });
-
-      if (!response.ok) throw new Error("Failed to send");
+      const response = await fetch("https://fastapi-backend-871774781948.us-central1.run.app/process/", {
+  method: "POST",
+  body: formData
+});
 
       const result = await response.json();
       console.log("Response from backend:", result);
