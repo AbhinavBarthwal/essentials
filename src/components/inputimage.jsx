@@ -4,27 +4,37 @@ import { RefreshCw } from "lucide-react";
 
 const CameraCapture = () => {
   const [capturedImage, setCapturedImage] = useState(null);
-  const webcamRef = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [facingMode, setFacingMode] = useState("environment"); // Default to back camera
   const [hasPermission, setHasPermission] = useState(null);
+  const [videoDevices, setVideoDevices] = useState([]);
+  const [deviceId, setDeviceId] = useState(null);
+  const webcamRef = useRef(null);
 
+  // Fetch devices on mount
   useEffect(() => {
-    const checkPermissions = async () => {
+    const getDevices = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        stream.getTracks().forEach(track => track.stop());
         setHasPermission(true);
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videoInputs = devices.filter((device) => device.kind === "videoinput");
+
+        // Try to pick default rear camera (avoid ultrawide if possible)
+        const rearCam = videoInputs.find((d) =>
+          /back|rear|environment/i.test(d.label)
+        ) || videoInputs[0];
+
+        setVideoDevices(videoInputs);
+        setDeviceId(rearCam.deviceId);
+        stream.getTracks().forEach(track => track.stop());
       } catch (err) {
-        console.error("Camera access error:", err);
+        console.error("Error getting devices:", err);
         setHasPermission(false);
       }
     };
 
-    if (isCameraOn) {
-      checkPermissions();
-    }
-  }, [isCameraOn]);
+    getDevices();
+  }, []);
 
   const captureImage = () => {
     if (webcamRef.current) {
@@ -42,48 +52,38 @@ const CameraCapture = () => {
   };
 
   const switchCamera = () => {
-    setFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
-    setIsCameraOn(false);
-    setTimeout(() => setIsCameraOn(true), 300); // Let state settle before restarting
-  };
+    if (videoDevices.length < 2) return;
 
-  const requestCameraAccess = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ video: true });
-      setHasPermission(true);
-      setIsCameraOn(true);
-    } catch (err) {
-      console.error("Failed to get camera access:", err);
-      setHasPermission(false);
-      alert("Camera access was denied. Please enable camera permissions in your browser settings.");
-    }
+    const currentIndex = videoDevices.findIndex((d) => d.deviceId === deviceId);
+    const nextIndex = (currentIndex + 1) % videoDevices.length;
+    setDeviceId(videoDevices[nextIndex].deviceId);
   };
 
   return (
     <div className="w-full h-[500px] mb-1 bg-black flex flex-col items-center justify-center relative">
       <div className="w-full h-full flex justify-center items-center relative overflow-hidden rounded-lg">
-
         {isCameraOn ? (
           <div className="relative w-full h-full">
             <Webcam
-              key={facingMode} // Force re-mount to switch camera
+              key={deviceId}
               ref={webcamRef}
               audio={false}
               screenshotFormat="image/jpeg"
-              videoConstraints={{ facingMode: { exact: facingMode } }}
+              videoConstraints={{ deviceId }}
               className="w-full h-full object-cover rounded-[20px]"
               forceScreenshotSourceSize={true}
             />
             <button
               onClick={switchCamera}
               className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full p-2 flex items-center shadow-md"
+              title="Switch Camera"
             >
               <RefreshCw className="text-black" size={24} />
             </button>
           </div>
         ) : capturedImage ? (
           <div className="relative w-full h-full">
-            <img 
+            <img
               src={capturedImage}
               alt="Captured"
               className="w-full h-full object-cover rounded-lg"
@@ -98,7 +98,7 @@ const CameraCapture = () => {
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gray-900">
             <button
-              onClick={hasPermission === false ? requestCameraAccess : toggleCamera}
+              onClick={() => setIsCameraOn(true)}
               className="bg-white text-black px-6 py-3 rounded-full shadow-lg hover:bg-gray-200 transition"
             >
               Start Camera
@@ -112,8 +112,7 @@ const CameraCapture = () => {
           <button
             onClick={captureImage}
             className="bg-red-600 border-4 border-white w-20 h-20 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center"
-          >
-          </button>
+          />
         )}
       </div>
     </div>
