@@ -16,11 +16,13 @@ from utils.audio_utils import transcribe_audio_file
 
 app = FastAPI()
 
-# CORS setup
+
+##CORS Configuration
 origins = [
-    "http://localhost:5173",
-    # add more if needed
+    "http://localhost:5173",  # for local dev testing
+    "https://essentials-cq29.vercel.app"  # your deployed frontend on Vercel
 ]
+
 
 app.add_middleware(
     CORSMiddleware,

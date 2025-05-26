@@ -4,13 +4,13 @@ import { RefreshCw } from "lucide-react";
 import { FaPlay, FaPause } from "react-icons/fa";
 
 function dataURLtoFile(dataurl, filename) {
-  const arr = dataurl.split(',');
+  const arr = dataurl.split(",");
   const mime = arr[0].match(/:(.*?);/)[1];
   const bstr = atob(arr[1]);
   let n = bstr.length;
   const u8arr = new Uint8Array(n);
-  while(n--) u8arr[n] = bstr.charCodeAt(n);
-  return new File([u8arr], filename, {type:mime});
+  while (n--) u8arr[n] = bstr.charCodeAt(n);
+  return new File([u8arr], filename, { type: mime });
 }
 
 async function urlToFile(url, filename, mimeType) {
@@ -46,7 +46,7 @@ const VoiceRecorder = ({ audioUrl, setAudioUrl }) => {
     };
 
     mediaRecorderRef.current.onstop = () => {
-      const blob = new Blob(chunks.current, { type: 'audio/webm' });
+      const blob = new Blob(chunks.current, { type: "audio/webm" });
       const url = URL.createObjectURL(blob);
       setAudioUrl(url);
       chunks.current = [];
@@ -83,7 +83,7 @@ const VoiceRecorder = ({ audioUrl, setAudioUrl }) => {
           onClick={recording ? stopRecording : startRecording}
           className="w-full h-12 bg-red-600 text-white py-3 mt-2 rounded-2xl text-center"
         >
-          {recording ? 'Stop Recording' : 'Start Recording'}
+          {recording ? "Stop Recording" : "Start Recording"}
         </button>
       ) : (
         <div className="w-full h-12 flex items-center justify-between bg-red-600 rounded-2xl py-3 px-4 mt-2">
@@ -126,13 +126,12 @@ const CameraCapture = ({ capturedImage, setCapturedImage }) => {
         setHasPermission(true);
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoInputs = devices.filter((d) => d.kind === "videoinput");
-        const rearCam = videoInputs.find((d) =>
-          /back|rear|environment/i.test(d.label)
-        ) || videoInputs[0];
+        const rearCam =
+          videoInputs.find((d) => /back|rear|environment/i.test(d.label)) || videoInputs[0];
         setVideoDevices(videoInputs);
         setDeviceId(rearCam.deviceId);
         setIsFrontCamera(checkIfFrontCamera(rearCam.label));
-        stream.getTracks().forEach(track => track.stop());
+        stream.getTracks().forEach((track) => track.stop());
       } catch (err) {
         console.error("Error getting devices:", err);
         setHasPermission(false);
@@ -191,7 +190,9 @@ const CameraCapture = ({ capturedImage, setCapturedImage }) => {
               audio={false}
               screenshotFormat="image/jpeg"
               videoConstraints={{ deviceId }}
-              className={`w-full h-full object-cover rounded-[20px] ${isFrontCamera ? "scale-x-[-1]" : ""}`}
+              className={`w-full h-full object-cover rounded-[20px] ${
+                isFrontCamera ? "scale-x-[-1]" : ""
+              }`}
               forceScreenshotSourceSize={true}
               mirrored={false}
             />
@@ -243,34 +244,38 @@ const CameraCapture = ({ capturedImage, setCapturedImage }) => {
 
 // === Master Input Component ===
 const UnifiedInputPage = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [capturedImage, setCapturedImage] = useState(null);
   const [audioUrl, setAudioUrl] = useState(null);
+  const [backendResponse, setBackendResponse] = useState(null); // <-- new state
 
-  // Moved handleSend inside component so it can access states
   const handleSend = async () => {
     const formData = new FormData();
 
-    if (text) formData.append('text', text);
+    if (text) formData.append("text", text);
 
     if (capturedImage) {
-      const imageFile = dataURLtoFile(capturedImage, 'capture.jpg');
-      formData.append('image', imageFile);
+      const imageFile = dataURLtoFile(capturedImage, "capture.jpg");
+      formData.append("image", imageFile);
     }
 
     if (audioUrl) {
-      const audioFile = await urlToFile(audioUrl, 'audio.webm', 'audio/webm');
-      formData.append('audio', audioFile);
+      const audioFile = await urlToFile(audioUrl, "audio.webm", "audio/webm");
+      formData.append("audio", audioFile);
     }
 
     try {
-      const response = await fetch("https://fastapi-backend-871774781948.us-central1.run.app/process/", {
-  method: "POST",
-  body: formData
-});
+      const response = await fetch(
+        "https://fastapi-backend-871774781948.us-central1.run.app/process/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const result = await response.json();
       console.log("Response from backend:", result);
+      setBackendResponse(result); // set response in state
       alert("Data processed successfully!");
     } catch (err) {
       console.error(err);
@@ -294,6 +299,34 @@ const UnifiedInputPage = () => {
           Send
         </button>
       </div>
+
+      {/* Render backend response below */}
+      {backendResponse && (
+        <div className="mt-6 p-4 bg-gray-900 rounded-lg space-y-3 text-sm">
+          <h3 className="text-lg font-semibold">Backend Response:</h3>
+
+          {backendResponse.text_analysis && (
+            <div>
+              <h4 className="font-semibold">Text Analysis:</h4>
+              <pre className="whitespace-pre-wrap">{JSON.stringify(backendResponse.text_analysis, null, 2)}</pre>
+            </div>
+          )}
+
+          {backendResponse.image_labels && (
+            <div>
+              <h4 className="font-semibold">Image Labels:</h4>
+              <pre className="whitespace-pre-wrap">{JSON.stringify(backendResponse.image_labels, null, 2)}</pre>
+            </div>
+          )}
+
+          {backendResponse.audio_transcript && (
+            <div>
+              <h4 className="font-semibold">Audio Transcript:</h4>
+              <pre className="whitespace-pre-wrap">{backendResponse.audio_transcript}</pre>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
