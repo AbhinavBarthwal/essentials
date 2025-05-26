@@ -50,7 +50,7 @@ const VoiceRecorder = () => {
       {!audioUrl ? (
         <button
           onClick={recording ? stopRecording : startRecording}
-          className="w-[80%] bg-red-600 text-white py-3 rounded-full text-center"
+          className="w-[100%] h-12 bg-red-600 text-white py-3 mt-2 rounded-full text-center"
         >
           {recording ? 'Stop Recording' : 'Start Recording'}
         </button>

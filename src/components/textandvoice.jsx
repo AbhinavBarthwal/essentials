@@ -9,7 +9,7 @@ const InputBox = () => {
     <div className="pt-2 bg-black text-white w-full">
       <TextInput value={text} onChange={setText} />
 
-      <div className="flex items-center justify-between  w-full">
+      <div className="flex items-center justify-between w-full">
         <div className="w-4/5">
           <VoiceRecorder />
         </div>
