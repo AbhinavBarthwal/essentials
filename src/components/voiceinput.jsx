@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { FaPlay, FaPause, FaMicrophone } from 'react-icons/fa';
+import { FaPlay, FaPause } from 'react-icons/fa';
 
 const VoiceRecorder = () => {
   const [recording, setRecording] = useState(false);
@@ -45,6 +45,12 @@ const VoiceRecorder = () => {
     setIsPlaying(!isPlaying);
   };
 
+  // New handler for delete
+  const deleteRecording = () => {
+    setAudioUrl(null);
+    setIsPlaying(false);
+  };
+
   return (
     <>
       {!audioUrl ? (
@@ -59,7 +65,12 @@ const VoiceRecorder = () => {
           <button onClick={togglePlay} className="text-white text-lg">
             {isPlaying ? <FaPause /> : <FaPlay />}
           </button>
-          <FaMicrophone className="text-white" />
+          <button
+            onClick={deleteRecording}
+            className="text-white bg-red-800 px-3 py-1 rounded-full hover:bg-red-900 transition"
+          >
+            Delete
+          </button>
           <audio
             ref={audioRef}
             src={audioUrl}
