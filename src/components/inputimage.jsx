@@ -98,7 +98,7 @@ const CameraCapture = () => {
   };
 
   return (
-    <div className="w-full h-[500px] mb-1 bg-black flex flex-col items-center justify-center relative">
+    <div className="w-full h-130 mb-1 bg-black flex flex-col items-center justify-center relative">
       <div className="w-full h-full flex justify-center items-center relative overflow-hidden rounded-lg">
         {isCameraOn ? (
           <div className="relative w-full h-full">
