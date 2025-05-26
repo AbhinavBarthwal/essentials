@@ -8,7 +8,13 @@ const CameraCapture = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [videoDevices, setVideoDevices] = useState([]);
   const [deviceId, setDeviceId] = useState(null);
+  const [isFrontCamera, setIsFrontCamera] = useState(false);
   const webcamRef = useRef(null);
+
+  // Helper: check if device label is front camera
+  const checkIfFrontCamera = (label) => {
+    return /front|user/i.test(label);
+  };
 
   // Fetch devices on mount
   useEffect(() => {
@@ -19,13 +25,14 @@ const CameraCapture = () => {
         const devices = await navigator.mediaDevices.enumerateDevices();
         const videoInputs = devices.filter((device) => device.kind === "videoinput");
 
-        // Try to pick default rear camera (avoid ultrawide if possible)
+        // Try to pick default rear camera first (avoid ultrawide if possible)
         const rearCam = videoInputs.find((d) =>
           /back|rear|environment/i.test(d.label)
         ) || videoInputs[0];
 
         setVideoDevices(videoInputs);
         setDeviceId(rearCam.deviceId);
+        setIsFrontCamera(checkIfFrontCamera(rearCam.label));
         stream.getTracks().forEach(track => track.stop());
       } catch (err) {
         console.error("Error getting devices:", err);
@@ -36,13 +43,43 @@ const CameraCapture = () => {
     getDevices();
   }, []);
 
-  const captureImage = () => {
-    if (webcamRef.current) {
-      // Take screenshot (this is NOT mirrored by default)
-      const imageSrc = webcamRef.current.getScreenshot();
-      setCapturedImage(imageSrc);
-      setIsCameraOn(false);
+  // When deviceId changes, update isFrontCamera flag
+  useEffect(() => {
+    if (!deviceId) return;
+
+    const device = videoDevices.find((d) => d.deviceId === deviceId);
+    if (device) {
+      setIsFrontCamera(checkIfFrontCamera(device.label));
     }
+  }, [deviceId, videoDevices]);
+
+  // Capture image and flip if front camera
+  const captureImage = () => {
+    if (!webcamRef.current) return;
+
+    const video = webcamRef.current.video;
+    if (!video) return;
+
+    // Create canvas with same size as video
+    const canvas = document.createElement("canvas");
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+
+    if (isFrontCamera) {
+      // Flip horizontally for front camera
+      ctx.translate(canvas.width, 0);
+      ctx.scale(-1, 1);
+    }
+
+    // Draw video frame to canvas
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // Get high quality JPEG image
+    const imageSrc = canvas.toDataURL("image/jpeg", 1.0); // 1.0 = max quality
+
+    setCapturedImage(imageSrc);
+    setIsCameraOn(false);
   };
 
   const toggleCamera = () => {
@@ -71,9 +108,9 @@ const CameraCapture = () => {
               audio={false}
               screenshotFormat="image/jpeg"
               videoConstraints={{ deviceId }}
-              className="w-full h-full object-cover rounded-[20px] scale-x-[-1]" // <-- mirror preview here
+              className={`w-full h-full object-cover rounded-[20px] ${isFrontCamera ? "scale-x-[-1]" : ""}`}
               forceScreenshotSourceSize={true}
-              mirrored={false} // disable internal mirroring by react-webcam (mirror handled by CSS)
+              mirrored={false} // manage mirroring ourselves
             />
             <button
               onClick={switchCamera}
@@ -89,7 +126,7 @@ const CameraCapture = () => {
               src={capturedImage}
               alt="Captured"
               className="w-full h-full object-cover rounded-lg"
-              style={{ transform: "none" }} // show actual photo without mirroring
+              style={{ transform: "none" }}
             />
             <button
               onClick={toggleCamera}
