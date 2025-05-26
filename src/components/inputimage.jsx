@@ -41,9 +41,12 @@ const CameraCapture = () => {
     }
   };
 
-  const switchCamera = () => {
-    setFacingMode(facingMode === "user" ? "environment" : "user");
-  };
+const switchCamera = () => {
+  setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+  setIsCameraOn(false); // Turn off to reset
+  setTimeout(() => setIsCameraOn(true), 100); // Turn on after short delay
+};
+
 
   const requestCameraAccess = async () => {
     try {
