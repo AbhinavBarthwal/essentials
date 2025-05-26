@@ -4,7 +4,7 @@ import CameraCapture from './components/inputimage';
 import Collection from './components/collection';
 import Previously from './components/previously';
 import DetailView from './components/DetailView'; 
-
+import InputBox from './components/textandvoice';
 
 const App = () => {
   return (
@@ -17,6 +17,7 @@ const App = () => {
             element={
               <div className="block sm:hidden bg-black p-4 rounded-lg">
                 <CameraCapture />
+                <InputBox />
                 <TodaysBrief />
                 <Collection />
                 <Previously />
