@@ -6,7 +6,7 @@ const CameraCapture = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const webcamRef = useRef(null);
   const [isCameraOn, setIsCameraOn] = useState(false);
-  const [facingMode, setFacingMode] = useState("user");
+  const [facingMode, setFacingMode] = useState("environment"); // Default to back camera
   const [hasPermission, setHasPermission] = useState(null);
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const CameraCapture = () => {
   };
 
 const switchCamera = () => {
-  setFacingMode((prev) => (prev === "user" ? "environment" : "user"));
+  setFacingMode((prev) => (prev === "environment" ? "environment" : "user"));
   setIsCameraOn(false); // Turn off to reset
   setTimeout(() => setIsCameraOn(true), 100); // Turn on after short delay
 };
