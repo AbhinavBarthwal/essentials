@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import Webcam from "react-webcam";
-import { Camera, CameraOff, RefreshCw, RotateCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 const CameraCapture = () => {
   const [capturedImage, setCapturedImage] = useState(null);
@@ -41,12 +41,11 @@ const CameraCapture = () => {
     }
   };
 
-const switchCamera = () => {
-  setFacingMode((prev) => (prev === "environment" ? "environment" : "user"));
-  setIsCameraOn(false); // Turn off to reset
-  setTimeout(() => setIsCameraOn(true), 100); // Turn on after short delay
-};
-
+  const switchCamera = () => {
+    setFacingMode((prev) => (prev === "environment" ? "user" : "environment"));
+    setIsCameraOn(false);
+    setTimeout(() => setIsCameraOn(true), 300); // Let state settle before restarting
+  };
 
   const requestCameraAccess = async () => {
     try {
@@ -66,22 +65,22 @@ const switchCamera = () => {
 
         {isCameraOn ? (
           <div className="relative w-full h-full">
-        <Webcam
-          ref={webcamRef}
-          audio={false}
-          screenshotFormat="image/jpeg"
-          videoConstraints={{ facingMode }}
-          className="w-full h-full object-cover rounded-[20px]"
-          forceScreenshotSourceSize={true}
-        />
-        <button
-          onClick={switchCamera}
-          className="absolute top-4 right-4 w-10 h-10  bg-white rounded-full p-2 flex items-center flex-row shadow-md"
-        >
-          <RefreshCw className="text-black" size={40}  />
-        </button>
-      </div>
-
+            <Webcam
+              key={facingMode} // Force re-mount to switch camera
+              ref={webcamRef}
+              audio={false}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: { exact: facingMode } }}
+              className="w-full h-full object-cover rounded-[20px]"
+              forceScreenshotSourceSize={true}
+            />
+            <button
+              onClick={switchCamera}
+              className="absolute top-4 right-4 w-10 h-10 bg-white rounded-full p-2 flex items-center shadow-md"
+            >
+              <RefreshCw className="text-black" size={24} />
+            </button>
+          </div>
         ) : capturedImage ? (
           <div className="relative w-full h-full">
             <img 
@@ -110,18 +109,12 @@ const switchCamera = () => {
 
       <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
         {isCameraOn && (
-          <>
-            <button
-              onClick={captureImage}
-              className="bg-red-600 border-4 border-white w-20 h-20 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center"
-            >
-              
-            </button>
-
-          </>
+          <button
+            onClick={captureImage}
+            className="bg-red-600 border-4 border-white w-20 h-20 rounded-full shadow-lg hover:bg-red-700 transition flex items-center justify-center"
+          >
+          </button>
         )}
-
-
       </div>
     </div>
   );
