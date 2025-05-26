@@ -26,6 +26,9 @@ app.add_middleware(
 )
 
 
+from fastapi.responses import JSONResponse
+import traceback
+
 @app.post("/process/")
 async def process_multimodal(
     text: Optional[str] = Form(None),
@@ -34,25 +37,31 @@ async def process_multimodal(
 ):
     result = {}
 
-    if text:
-        text_analysis = await analyze_text(text)
-        result['text_analysis'] = text_analysis
+    try:
+        if text:
+            text_analysis = await analyze_text(text)
+            result['text_analysis'] = text_analysis
 
-    if image:
-        labels = await analyze_image(image)
-        await image.seek(0)
-        detected_text = await detect_text_from_image(image)
-        result['image_labels'] = labels
-        result['image_detected_text'] = detected_text
+        if image:
+            labels = await analyze_image(image)
+            await image.seek(0)
+            detected_text = await detect_text_from_image(image)
+            result['image_labels'] = labels
+            result['image_detected_text'] = detected_text
 
-    if audio:
-        transcript = await transcribe_audio_file(audio)
-        result['audio_transcript'] = transcript
+        if audio:
+            transcript = await transcribe_audio_file(audio)
+            result['audio_transcript'] = transcript
 
-    if not result:
-        raise HTTPException(status_code=400, detail="No input provided")
+        if not result:
+            raise HTTPException(status_code=400, detail="No input provided")
 
-    return result
+        return result
+
+    except Exception as e:
+        print("=== ERROR in /process/ ===")
+        traceback.print_exc()
+        return JSONResponse(status_code=500, content={"error": str(e)})
 
 
 @app.get("/hello")
