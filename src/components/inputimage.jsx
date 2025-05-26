@@ -38,6 +38,7 @@ const CameraCapture = () => {
 
   const captureImage = () => {
     if (webcamRef.current) {
+      // Take screenshot (this is NOT mirrored by default)
       const imageSrc = webcamRef.current.getScreenshot();
       setCapturedImage(imageSrc);
       setIsCameraOn(false);
@@ -70,8 +71,9 @@ const CameraCapture = () => {
               audio={false}
               screenshotFormat="image/jpeg"
               videoConstraints={{ deviceId }}
-              className="w-full h-full object-cover rounded-[20px]"
+              className="w-full h-full object-cover rounded-[20px] scale-x-[-1]" // <-- mirror preview here
               forceScreenshotSourceSize={true}
+              mirrored={false} // disable internal mirroring by react-webcam (mirror handled by CSS)
             />
             <button
               onClick={switchCamera}
@@ -87,6 +89,7 @@ const CameraCapture = () => {
               src={capturedImage}
               alt="Captured"
               className="w-full h-full object-cover rounded-lg"
+              style={{ transform: "none" }} // show actual photo without mirroring
             />
             <button
               onClick={toggleCamera}
