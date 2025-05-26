@@ -15,7 +15,7 @@ const App = () => {
           <Route
             path="/"
             element={
-              <div className="block sm:hidden bg-black p-4 rounded-lg">
+              <div className="block sm:hidden bg-black p-2 rounded-lg">
                 <CameraCapture />
                 <InputBox />
                 <TodaysBrief />

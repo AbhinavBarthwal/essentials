@@ -56,18 +56,18 @@ const VoiceRecorder = () => {
       {!audioUrl ? (
         <button
           onClick={recording ? stopRecording : startRecording}
-          className="w-[100%] h-12 bg-red-600 text-white py-3 mt-2 rounded-full text-center"
+          className="w-[100%] h-12 bg-red-600 text-white py-3 mt-2 rounded-2xl text-center"
         >
           {recording ? 'Stop Recording' : 'Start Recording'}
         </button>
       ) : (
-        <div className="w-[100%] h-12 flex items-center justify-between bg-red-600 rounded-full py-3 px-4 mt-2">
+        <div className="w-[100%] h-12 flex items-center justify-between bg-red-600 rounded-2xl py-3 px-4 mt-2">
           <button onClick={togglePlay} className="text-white text-lg">
             {isPlaying ? <FaPause /> : <FaPlay />}
           </button>
           <button
             onClick={deleteRecording}
-            className="text-white bg-red-800 px-3 py-1 rounded-full hover:bg-red-900 transition"
+            className="text-white bg-red-800 px-3 py-1 rounded-2xl hover:bg-red-900 transition"
           >
             Delete
           </button>
